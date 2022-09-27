@@ -1,15 +1,10 @@
 # TheMemeProyect
 
-### 1) BotFather es un bot que administra todos los demas bots de Telegram.
-### 2) Corremos /newbot en BotFather para crear un nuevo bot.
-### 3) Decidimos el nombre del bot (Kurzekart Meme) y el username para el bot (kurzekart_meme_bot)
-### 4) En nuestra compu, instalamos la libreria python-telegram-bot con el comando:
+### 1) BotFather is a bot that manages all Telegram bots.
+### 2) Run command /newbot in BotFather in order to create a new bot.
+### 3) Decide the bot name (Kurzekart Meme) and username (kurzekart_meme_bot)
+### 4) On our local machine, install Python library python-telegram-bot with command:
 
     pip install python-telegram-bot
 
-
-
-
-Use this token to access the HTTP API:
-5618146048:AAG1rHJcA6nz33O3hAgz8tlPnSIq_CWkXkA
-Keep your token secure and store it safely, it can be used by anyone to control your bot.
+### 5) Add CommandHandlers for different commands on bot.py file
