@@ -13,7 +13,8 @@ def start(update, context):  # Update is an object that represents an incoming u
         chat_id=update.effective_chat.id,  # We get the unique id of the chat from where the user sent the command
         text="This is the start function"
     )
-    log_command("/start", str(update.message.from_user['username']))  # All infomation about user (as username, id, first/last name
+    log_command("/start", str(update.message.from_user['username']))
+    # All infomation about user (as username, id, first/last name
     # and profile photos) available from telegram.User object. You can easily get it using telegram.Message
 
 
