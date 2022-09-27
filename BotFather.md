@@ -1,4 +1,7 @@
-# BotFather commands
+# BotFather 
+### Is a bot that manages all Telegram bots. You can run command /newbot in BotFather in order to create a new bot and decide the bot name (Kurzekart Meme) and username (kurzekart_meme_bot)
+
+### BotFather commands
 
 You can control me by sending these commands:
 
