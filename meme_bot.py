@@ -2,6 +2,7 @@ import random
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import BOT_TOKEN
+from tools import *
 
 
 def start(update, context):  # Update is an object that represents an incoming update sent via a chat
@@ -12,6 +13,8 @@ def start(update, context):  # Update is an object that represents an incoming u
         chat_id=update.effective_chat.id,  # We get the unique id of the chat from where the user sent the command
         text="This is the start function"
     )
+    log_command("/start", str(update.message.from_user['username']))  # All infomation about user (as username, id, first/last name
+    # and profile photos) available from telegram.User object. You can easily get it using telegram.Message
 
 
 def echo(update, context):
@@ -29,6 +32,7 @@ def get_meme(update, context):
         chat_id=update.effective_chat.id,
         photo=open("memes/" + random.choice(memes) + ".jpg", 'rb')
     )
+    log_command("/meme", str(update.message.from_user['username']))
 
 
 start_handler = CommandHandler('start', start)  # CommandHandler is a class that defines what happens when a user
@@ -36,7 +40,6 @@ start_handler = CommandHandler('start', start)  # CommandHandler is a class that
 echo_handler = MessageHandler(Filters.text & (~ Filters.command), echo)  # MessageHandler is a class used when we
 # need to handle telegram messages. They might contain text, media or status updates
 meme_handler = CommandHandler('meme', get_meme)
-
 
 if __name__ == "__main__":
     updater = Updater(token=BOT_TOKEN)  # Updater class, which employs the class Dispatcher, provides a frontend to the
