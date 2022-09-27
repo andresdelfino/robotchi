@@ -31,7 +31,7 @@ def get_meme(update, context):
     memes = [meme for meme in listdir(path.join(getcwd(), 'memes'))]  # issue #2, may need testing.
     context.bot.send_photo(
         chat_id=update.effective_chat.id,
-        photo=open(path.join(getcwd(), "memes" + random.choice(memes), 'rb'))  # agnostic import
+        photo=open(path.join(getcwd(), "memes", random.choice(memes)), 'rb')  # agnostic import
     )
     log_command("/meme", str(update.message.from_user['username']))
 
