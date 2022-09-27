@@ -1,4 +1,5 @@
 import random
+from telegram.error import TimedOut, BadRequest
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import BOT_TOKEN
 from tools import *
@@ -6,6 +7,7 @@ from os import getcwd, path, listdir
 from tags import tag_dict
 import urllib.request
 from bs4 import BeautifulSoup
+import re
 
 
 def start(update, context):  # Update is an object that represents an incoming update sent via a chat
@@ -56,15 +58,23 @@ def get_wiki(update, context):
         with open(path, "r", encoding="utf8") as f:
             page = f.read()
         soup = BeautifulSoup(page, "html.parser")
-        message = soup.select("div p")[0].get_text()
+        # TODO: check when the term is ambiguous
+        message = soup.find("div", id="bodyContent")\
+            .find("div", id="mw-content-text")\
+            .find("div", {"class": "mw-parser-output"})\
+            .find("p").get_text()
+        message = re.sub('\[\d\]', '', message)
     except urllib.error.HTTPError:
         message = "Wikipedia has no information about " + element
     except FileNotFoundError:
         message = "File " + path + " does not exist"
-    context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text=message
-    )
+    try:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=message
+        )
+    except BadRequest:
+        print("There was an issue with the message")
     log_command("/wiki", str(update.message.from_user['username']))
 
 
