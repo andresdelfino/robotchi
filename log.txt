@@ -1,4 +1,0 @@
-26/09/2022 22:12:40: user el_cartagines executed command /start
-26/09/2022 22:12:43: user el_cartagines executed command /meme
-26/09/2022 22:12:48: user el_cartagines executed command /meme
-26/09/2022 22:12:51: user el_cartagines executed command /meme
