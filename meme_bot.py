@@ -1,8 +1,8 @@
 import random
-
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import BOT_TOKEN
 from tools import *
+from os import getcwd, path, listdir
 
 
 def start(update, context):  # Update is an object that represents an incoming update sent via a chat
@@ -28,10 +28,10 @@ def echo(update, context):
 
 def get_meme(update, context):
     print("We are inside get_meme function")
-    memes = ["andy_dwyer_surprise", "philosoraptor", "suspicious_fry"]
+    memes = [meme for meme in listdir(path.join(getcwd(), 'memes'))]  # issue #2, may need testing.
     context.bot.send_photo(
         chat_id=update.effective_chat.id,
-        photo=open("memes/" + random.choice(memes) + ".jpg", 'rb')
+        photo=open(path.join(getcwd(), "memes" + random.choice(memes), 'rb'))  # agnostic import
     )
     log_command("/meme", str(update.message.from_user['username']))
 
