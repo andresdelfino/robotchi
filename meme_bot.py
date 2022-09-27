@@ -1,3 +1,5 @@
+import random
+
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import BOT_TOKEN
 
@@ -20,10 +22,20 @@ def echo(update, context):
     )
 
 
+def get_meme(update, context):
+    print("We are inside get_meme function")
+    memes = ["andy_dwyer_surprise", "philosoraptor", "suspicious_fry"]
+    context.bot.send_photo(
+        chat_id=update.effective_chat.id,
+        photo=open("memes/" + random.choice(memes) + ".jpg", 'rb')
+    )
+
+
 start_handler = CommandHandler('start', start)  # CommandHandler is a class that defines what happens when a user
 # executes a command (/command). In this case, when user sends "start" command, the start function will be called
-echo_handler = MessageHandler(Filters.text & (not Filters.command), echo)  # MessageHandler is a class used when we
+echo_handler = MessageHandler(Filters.text & (~ Filters.command), echo)  # MessageHandler is a class used when we
 # need to handle telegram messages. They might contain text, media or status updates
+meme_handler = CommandHandler('meme', get_meme)
 
 
 if __name__ == "__main__":
@@ -36,4 +48,5 @@ if __name__ == "__main__":
     # arbitrary types.
     dispatcher.add_handler(start_handler, 0)  # Register a handler to the dispatcher. Order and priority counts.
     dispatcher.add_handler(echo_handler, 0)
+    dispatcher.add_handler(meme_handler, 0)
     updater.start_polling()
