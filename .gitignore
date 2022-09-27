@@ -7,5 +7,9 @@ __pycache__/
 # IntelliJ
 .idea
 
+<<<<<<< HEAD
 config.py
 log.txt
+=======
+log.txt
+>>>>>>> b7a1f7a1acb3bf7347172ea652ce288cd83e5f80
