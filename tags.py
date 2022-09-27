@@ -1,0 +1,11 @@
+tag_dict = dict()
+tag_dict["surprise"] = ["andy_dwyer_surprise"]
+tag_dict["angry"] = ["angry_bob"]
+tag_dict["handshake"] = ["epic_handshake"]
+tag_dict["old"] = ["old_lady"]
+tag_dict["simply"] = ["one_does_not_simply"]
+tag_dict["doubt"] = ["philosoraptor"]
+tag_dict["suspicious"] = ["suspicious_fry"]
+tag_dict["sarcasm"] = ["that_would_be_great"]
+tag_dict["calculus"] = ["trigonometry"]
+tag_dict["unsettled"] = ["unsettled_tom"]
