@@ -3,7 +3,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import BOT_TOKEN
 from tools import *
 from os import getcwd, path, listdir
-from tags import *
+from tags import tag_dict
 
 
 def start(update, context):  # Update is an object that represents an incoming update sent via a chat
@@ -29,10 +29,17 @@ def echo(update, context):
 
 def get_meme(update, context):
     print("We are inside get_meme function")
-    memes = [meme for meme in listdir(path.join(getcwd(), 'memes'))]  # issue #2, may need testing.
+    user_tag = ' '.join(context.args)
+    if user_tag.lower() in tag_dict.keys():
+        print("User used a tag and it matches")
+        chosen_meme = random.choice(tag_dict[user_tag.lower()]) + ".jpg"
+    else:
+        print("User didn't used a tag or the tag didn't matched")
+        memes = [meme for meme in listdir(path.join(getcwd(), 'memes'))]  # issue #2, may need testing.
+        chosen_meme = random.choice(memes)
     context.bot.send_photo(
         chat_id=update.effective_chat.id,
-        photo=open(path.join(getcwd(), "memes/" + random.choice(memes)), 'rb')  # agnostic import
+        photo=open(path.join(getcwd(), "memes/" + chosen_meme), 'rb')  # agnostic import
     )
     log_command("/meme", str(update.message.from_user['username']))
 
