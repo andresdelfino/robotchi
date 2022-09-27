@@ -3,6 +3,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import BOT_TOKEN
 from tools import *
 from os import getcwd, path, listdir
+from tags import *
 
 
 def start(update, context):  # Update is an object that represents an incoming update sent via a chat

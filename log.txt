@@ -2,3 +2,8 @@
 26/09/2022 22:12:43: user el_cartagines executed command /meme
 26/09/2022 22:12:48: user el_cartagines executed command /meme
 26/09/2022 22:12:51: user el_cartagines executed command /meme
+27/09/2022 18:21:18: user el_cartagines executed command /start 
+27/09/2022 18:21:23: user el_cartagines executed command /meme 
+27/09/2022 18:21:27: user el_cartagines executed command /meme 
+27/09/2022 18:21:31: user el_cartagines executed command /meme 
+27/09/2022 18:21:35: user el_cartagines executed command /meme 
