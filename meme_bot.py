@@ -4,6 +4,8 @@ from config import BOT_TOKEN
 from tools import *
 from os import getcwd, path, listdir
 from tags import tag_dict
+import urllib.request
+from bs4 import BeautifulSoup
 
 
 def start(update, context):  # Update is an object that represents an incoming update sent via a chat
@@ -44,11 +46,34 @@ def get_meme(update, context):
     log_command("/meme", str(update.message.from_user['username']))
 
 
+def get_wiki(update, context):
+    url = "https://es.wikipedia.org/wiki/"
+    print("We are inside get_wiki function")
+    element = ' '.join(context.args)
+    path = "wiki/" + element + ".html"
+    try:
+        urllib.request.urlretrieve(url + element, path)
+        with open(path, "r", encoding="utf8") as f:
+            page = f.read()
+        soup = BeautifulSoup(page, "html.parser")
+        message = soup.select("div p")[0].get_text()
+    except urllib.error.HTTPError:
+        message = "Wikipedia has no information about " + element
+    except FileNotFoundError:
+        message = "File " + path + " does not exist"
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=message
+    )
+    log_command("/wiki", str(update.message.from_user['username']))
+
+
 start_handler = CommandHandler('start', start)  # CommandHandler is a class that defines what happens when a user
 # executes a command (/command). In this case, when user sends "start" command, the start function will be called
 echo_handler = MessageHandler(Filters.text & (~ Filters.command), echo)  # MessageHandler is a class used when we
 # need to handle telegram messages. They might contain text, media or status updates
 meme_handler = CommandHandler('meme', get_meme)
+wiki_handler = CommandHandler('wiki', get_wiki)
 
 if __name__ == "__main__":
     updater = Updater(token=BOT_TOKEN)  # Updater class, which employs the class Dispatcher, provides a frontend to the
@@ -61,4 +86,5 @@ if __name__ == "__main__":
     dispatcher.add_handler(start_handler, 0)  # Register a handler to the dispatcher. Order and priority counts.
     dispatcher.add_handler(echo_handler, 0)
     dispatcher.add_handler(meme_handler, 0)
+    dispatcher.add_handler(wiki_handler, 0)
     updater.start_polling()

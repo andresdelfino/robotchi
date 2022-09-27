@@ -23,3 +23,9 @@
 27/09/2022 18:53:28: user el_cartagines executed command /meme 
 27/09/2022 18:53:35: user el_cartagines executed command /meme 
 27/09/2022 18:53:42: user el_cartagines executed command /meme 
+27/09/2022 19:52:25: user el_cartagines executed command /wiki 
+27/09/2022 19:53:35: user el_cartagines executed command /wiki 
+27/09/2022 19:56:11: user el_cartagines executed command /wiki 
+27/09/2022 19:56:19: user el_cartagines executed command /wiki 
+27/09/2022 19:58:46: user el_cartagines executed command /wiki 
+27/09/2022 19:59:01: user el_cartagines executed command /wiki 
