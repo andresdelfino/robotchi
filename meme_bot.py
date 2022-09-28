@@ -88,13 +88,30 @@ def inline_query(update, context):
     if query == '':
         return
 
-    results = [
-        InlineQueryResultPhoto(
-            id=str(uuid.uuid4()),
-            photo_url='https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-            thumb_url='https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-        ),
-    ]
+    MEMES = {
+        'https://www.meme-arsenal.com/memes/389f398c7bf55ae32a8a326031af2c32.jpg': {
+            'fry',
+            *'not sure if'.split(),
+            'futurama',
+        },
+        'https://i.pinimg.com/originals/77/a6/28/77a628cb2ccbcc26a7ed6fdc737e31c7.jpg': {
+            'fry',
+            *'take all my money'.split(),
+            'futurama',
+        }
+    }
+
+    results = []
+
+    for url, tags in MEMES.items():
+        if query.lower() in tags:
+            results.append(
+                InlineQueryResultPhoto(
+                    id=str(uuid.uuid4()),
+                    photo_url=url,
+                    thumb_url=url,
+                ),
+            )
 
     update.inline_query.answer(results)
 
