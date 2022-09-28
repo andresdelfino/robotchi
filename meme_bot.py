@@ -5,7 +5,7 @@ from telegram.error import TimedOut, BadRequest
 from telegram.ext import Updater, CommandHandler, InlineQueryHandler, MessageHandler, Filters
 from config import BOT_TOKEN
 from tools import *
-from os import getcwd, path, listdir
+from os import environ, getcwd, path, listdir
 from tags import tag_dict
 import urllib.request
 from bs4 import BeautifulSoup
@@ -89,27 +89,37 @@ def inline_query(update, context):
         return
 
     MEMES = {
-        'https://www.meme-arsenal.com/memes/389f398c7bf55ae32a8a326031af2c32.jpg': {
-            'fry',
-            *'not sure if'.split(),
-            'futurama',
+        'not_sure_if': {
+            'photo_url': 'https://www.meme-arsenal.com/memes/389f398c7bf55ae32a8a326031af2c32.jpg',
+            'thumb_url': 'https://www.meme-arsenal.com/memes/389f398c7bf55ae32a8a326031af2c32.jpg',
+            'tags': {
+                'fry',
+                *'not sure if'.split(),
+                'futurama',
+            },
         },
-        'https://i.pinimg.com/originals/77/a6/28/77a628cb2ccbcc26a7ed6fdc737e31c7.jpg': {
-            'fry',
-            *'take all my money'.split(),
-            'futurama',
-        }
+        'shut_up_and_take_my_money': {
+            'photo_url': 'https://i.pinimg.com/originals/77/a6/28/77a628cb2ccbcc26a7ed6fdc737e31c7.jpg',
+            'thumb_url': 'https://i.pinimg.com/originals/77/a6/28/77a628cb2ccbcc26a7ed6fdc737e31c7.jpg',
+            'tags': {
+                'fry',
+                *'shut up and take my money'.split(),
+                'futurama',
+            }
+        },
     }
 
     results = []
 
-    for url, tags in MEMES.items():
-        if query.lower() in tags:
+    tags = set(query.lower().split())
+
+    for meme_name, meme_data in MEMES.items():
+        if tags <= meme_data['tags']:
             results.append(
                 InlineQueryResultPhoto(
                     id=str(uuid.uuid4()),
-                    photo_url=url,
-                    thumb_url=url,
+                    photo_url=meme_data['photo_url'],
+                    thumb_url=meme_data['thumb_url'],
                 ),
             )
 
@@ -126,7 +136,8 @@ wiki_handler = CommandHandler('wiki', get_wiki)
 inline_handler = InlineQueryHandler(inline_query)
 
 if __name__ == "__main__":
-    updater = Updater(token=BOT_TOKEN)  # Updater class, which employs the class Dispatcher, provides a frontend to the
+    bot_token = environ.get('BOT_TOKEN', BOT_TOKEN)
+    updater = Updater(token=bot_token)  # Updater class, which employs the class Dispatcher, provides a frontend to the
     # class Bot to the programmer, so they can focus on coding the bot. Its purpose is to receive the updates from
     # Telegram and to deliver them to said dispatcher. It also runs in a separate thread, so the user can interact with
     # the bot, for example on the command line.
