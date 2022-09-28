@@ -1,6 +1,8 @@
 import random
+import uuid
+from telegram import InlineQueryResultPhoto
 from telegram.error import TimedOut, BadRequest
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, InlineQueryHandler, MessageHandler, Filters
 from config import BOT_TOKEN
 from tools import *
 from os import getcwd, path, listdir
@@ -78,12 +80,33 @@ def get_wiki(update, context):
     log_command("/wiki", str(update.message.from_user['username']))
 
 
+def inline_query(update, context):
+    print("We are inside inline_query function")
+
+    query = update.inline_query.query
+
+    if query == '':
+        return
+
+    results = [
+        InlineQueryResultPhoto(
+            id=str(uuid.uuid4()),
+            photo_url='https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
+            thumb_url='https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
+        ),
+    ]
+
+    update.inline_query.answer(results)
+
+
 start_handler = CommandHandler('start', start)  # CommandHandler is a class that defines what happens when a user
 # executes a command (/command). In this case, when user sends "start" command, the start function will be called
 echo_handler = MessageHandler(Filters.text & (~ Filters.command), echo)  # MessageHandler is a class used when we
 # need to handle telegram messages. They might contain text, media or status updates
 meme_handler = CommandHandler('meme', get_meme)
 wiki_handler = CommandHandler('wiki', get_wiki)
+
+inline_handler = InlineQueryHandler(inline_query)
 
 if __name__ == "__main__":
     updater = Updater(token=BOT_TOKEN)  # Updater class, which employs the class Dispatcher, provides a frontend to the
@@ -97,4 +120,5 @@ if __name__ == "__main__":
     dispatcher.add_handler(echo_handler, 0)
     dispatcher.add_handler(meme_handler, 0)
     dispatcher.add_handler(wiki_handler, 0)
+    dispatcher.add_handler(inline_handler)
     updater.start_polling()
