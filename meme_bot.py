@@ -1,7 +1,7 @@
 import random
 import uuid
 from telegram import InlineQueryResultPhoto
-from telegram.error import TimedOut, BadRequest
+from telegram.error import BadRequest
 from telegram.ext import Updater, CommandHandler, InlineQueryHandler, MessageHandler, Filters
 from config import BOT_TOKEN
 from tools import *
@@ -45,7 +45,7 @@ def get_meme(update, context):
         chosen_meme = random.choice(memes)
     context.bot.send_photo(
         chat_id=update.effective_chat.id,
-        photo=open(path.join(getcwd(), "memes/" + chosen_meme), 'rb')  # agnostic import
+        photo=open(path.join(getcwd(), "memes", chosen_meme), 'rb')  # agnostic import
     )
     log_command("/meme", str(update.message.from_user['username']))
 
@@ -54,22 +54,22 @@ def get_wiki(update, context):
     url = "https://es.wikipedia.org/wiki/"
     print("We are inside get_wiki function")
     element = ' '.join(context.args)
-    path = "wiki/" + element + ".html"
+    route = f"wiki/{element}.html"  # "path" coflicts with the module of the same name
     try:
-        urllib.request.urlretrieve(url + element, path)
-        with open(path, "r", encoding="utf8") as f:
+        urllib.request.urlretrieve(url + element, route)
+        with open(route, "r", encoding="utf8") as f:
             page = f.read()
         soup = BeautifulSoup(page, "html.parser")
         # TODO: check when the term is ambiguous
-        message = soup.find("div", id="bodyContent")\
-            .find("div", id="mw-content-text")\
-            .find("div", {"class": "mw-parser-output"})\
+        message = soup.find("div", id="bodyContent") \
+            .find("div", id="mw-content-text") \
+            .find("div", {"class": "mw-parser-output"}) \
             .find("p").get_text()
-        message = re.sub('\[\d\]', '', message)
+        message = re.sub('\[\d\]', '', message)  # Pycharm me está tirando erroes en este RE
     except urllib.error.HTTPError:
-        message = "Wikipedia has no information about " + element
+        message = f"Wikipedia has no information about {element}"
     except FileNotFoundError:
-        message = "File " + path + " does not exist"
+        message = f"File {route} does not exist"
     try:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -80,7 +80,7 @@ def get_wiki(update, context):
     log_command("/wiki", str(update.message.from_user['username']))
 
 
-def inline_query(update, context):
+def inline_query(update, context):  # parameter context is not used.
     print("We are inside inline_query function")
 
     query = update.inline_query.query
@@ -88,7 +88,7 @@ def inline_query(update, context):
     if query == '':
         return
 
-    MEMES = {
+    memes = {  # PEP8: variables should be lowercase
         'not_sure_if': {
             'photo_url': 'https://www.meme-arsenal.com/memes/389f398c7bf55ae32a8a326031af2c32.jpg',
             'thumb_url': 'https://www.meme-arsenal.com/memes/389f398c7bf55ae32a8a326031af2c32.jpg',
@@ -113,7 +113,7 @@ def inline_query(update, context):
 
     tags = set(query.lower().split())
 
-    for meme_name, meme_data in MEMES.items():
+    for meme_name, meme_data in memes.items():
         if tags <= meme_data['tags']:
             results.append(
                 InlineQueryResultPhoto(
