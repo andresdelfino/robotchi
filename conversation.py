@@ -2,10 +2,9 @@ from telegram import ReplyKeyboardRemove, Update
 from telegram.ext import CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext
 import logging
 
-
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
-SUBJECT, PHOTO, LOCATION, BIO = range(4)
+SUBJECT, PHOTO, LOCATION, COMMENT = range(4)
 
 
 def talk(update: Update, context: CallbackContext):
@@ -66,9 +65,9 @@ def location(update: Update, context: CallbackContext):
     logger.info("Location of user %s is latitude %f / longitude %f", user.first_name,
                 user_location.latitude, user_location.longitude)
     update.message.reply_text(
-        'Hey, that is a nice place.'
+        'Hey, that is a nice place. Is there anything else you want to tell me?'
     )
-    return BIO
+    return COMMENT
 
 
 def skip_location(update: Update, context: CallbackContext):
@@ -77,7 +76,16 @@ def skip_location(update: Update, context: CallbackContext):
     update.message.reply_text(
         'Ok, no problem. Is there anything else you want to tell me?'
     )
-    return LOCATION
+    return COMMENT
+
+
+def comment(update: Update, context: CallbackContext):
+    user = update.message.from_user
+    logger.info("Comment by %s: %s", user.first_name, update.message.text)
+    update.message.reply_text(
+        'Ok, I will take that into consideration. Bye!'
+    )
+    return ConversationHandler.END
 
 
 conv_handler = ConversationHandler(
@@ -95,9 +103,9 @@ conv_handler = ConversationHandler(
             MessageHandler(Filters.location, location),
             CommandHandler('skip', skip_location),
         ],
-        BIO: [
-            MessageHandler(Filters.text & ~ Filters.command, bio)
+        COMMENT: [
+            MessageHandler(Filters.text & ~ Filters.command, comment)
         ],
     },
-    fallbacks= [CommandHandler('cancel', cancel)]
+    fallbacks=[CommandHandler('cancel', cancel)]
 )
