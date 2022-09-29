@@ -5,37 +5,44 @@ from telegram import InlineQueryResultPhoto
 from telegram.error import BadRequest
 from telegram.ext import Updater, CommandHandler, InlineQueryHandler, MessageHandler, Filters
 from config import BOT_TOKEN
-from tools import *
 from os import environ, getcwd, path, listdir
 from tags import tag_dict
 import urllib.request
 from bs4 import BeautifulSoup
 import re
+import logging
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def start(update, context):  # Update is an object that represents an incoming update sent via a chat
     print("We are inside start function")
+    user = update.message.from_user
     context.bot.send_message(  # This is the send_message method from class meme_bot.py. This method is used to send
         # text messages. We are passing two arguments: chat_id, which is the unique identifier for the target chat or
         # username of the target channel, and text, which is the text of the message to be sent (max 4096 characters)
         chat_id=update.effective_chat.id,  # We get the unique id of the chat from where the user sent the command
         text="This is the start function"
     )
-    log_command("/start", str(update.message.from_user['username']))
+    logger.info("User %s called the start command", user.first_name)
     # All infomation about user (as username, id, first/last name
     # and profile photos) available from telegram.User object. You can easily get it using telegram.Message
 
 
 def echo(update, context):
     print("We are inside echo function")
+    user = update.message.from_user
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=update.message.text  # We are sending back the same message that the user send to the bot
     )
+    logger.info("User %s called the echo command", user.first_name)
 
 
 def get_meme(update, context):
     print("We are inside get_meme function")
+    user = update.message.from_user
     user_tag = ' '.join(context.args)
     if user_tag.lower() in tag_dict.keys():
         print("User used a tag and it matches")
@@ -48,12 +55,13 @@ def get_meme(update, context):
         chat_id=update.effective_chat.id,
         photo=open(path.join(getcwd(), "memes", chosen_meme), 'rb')  # agnostic import
     )
-    log_command("/meme", str(update.message.from_user['username']))
+    logger.info("User %s called the get_meme command", user.first_name)
 
 
 def get_wiki(update, context):
     url = "https://es.wikipedia.org/wiki/"
     print("We are inside get_wiki function")
+    user = update.message.from_user
     element = ' '.join(context.args)
     route = f"wiki/{element}.html"  # "path" coflicts with the module of the same name
     message = download_wiki(element, route, url)
@@ -64,7 +72,7 @@ def get_wiki(update, context):
         )
     except BadRequest:
         print("There was an issue with the message")
-    log_command("/wiki", str(update.message.from_user['username']))
+    logger.info("User %s called the get_wiki command", user.first_name)
 
 
 def download_wiki(element, route, url):
@@ -88,15 +96,11 @@ def download_wiki(element, route, url):
 
 def inline_query(update, context):  # parameter context is not used.
     # https://core.telegram.org/bots/api#inlinequeryresultphoto
-
     # https://docs.python-telegram-bot.org/en/v13.14/telegram.ext.inlinequeryhandler.html
     # https://docs.python-telegram-bot.org/en/v13.14/telegram.inlinequery.html
     # https://docs.python-telegram-bot.org/en/v13.14/telegram.inlinequeryresultphoto.html
-
     print('We are inside inline_query function')
-
     query = update.inline_query.query
-
     print('User:', update.inline_query.from_user.username)
     print('Query:', query)
 
