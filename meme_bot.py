@@ -113,6 +113,18 @@ def get_wiki(update, context):
     print("We are inside get_wiki function")
     element = ' '.join(context.args)
     route = f"wiki/{element}.html"  # "path" coflicts with the module of the same name
+    message = download_wiki(element, route, url)
+    try:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=message
+        )
+    except BadRequest:
+        print("There was an issue with the message")
+    log_command("/wiki", str(update.message.from_user['username']))
+
+
+def download_wiki(element, route, url):
     try:
         urllib.request.urlretrieve(url + element, route)
         with open(route, "r", encoding="utf8") as f:
@@ -128,14 +140,7 @@ def get_wiki(update, context):
         message = f"Wikipedia has no information about {element}"
     except FileNotFoundError:
         message = f"File {route} does not exist"
-    try:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=message
-        )
-    except BadRequest:
-        print("There was an issue with the message")
-    log_command("/wiki", str(update.message.from_user['username']))
+    return message
 
 
 def inline_query(update, context):  # parameter context is not used.
