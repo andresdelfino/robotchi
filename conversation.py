@@ -17,6 +17,20 @@ def talk(update: Update, context: CallbackContext):
     )
     return SUBJECT
 
+
+def subject(update: Update, context: CallbackContext):
+    user = update.message.from_user
+    chosen_subject = update.message.text
+    logger.info("User %s chose to talk about %s", user.first_name, chosen_subject)
+    # url = "https://es.wikipedia.org/wiki/"
+    # route = f"wiki/{chosen_subject}.html"  # "path" coflicts with the module of the same name
+    # message = download_wiki(chosen_subject, route, url)
+    update.message.reply_text(
+        'Here is some info about ' + chosen_subject + ':' + '\n\n'
+    )
+    return PHOTO
+
+
 conv_handler = ConversationHandler(
     entry_points=[CommandHandler('talk', talk)],
     states={
