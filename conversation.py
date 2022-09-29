@@ -31,6 +31,15 @@ def subject(update: Update, context: CallbackContext):
     return PHOTO
 
 
+def skip_subject(update: Update, context: CallbackContext):
+    user = update.message.from_user
+    logger.info("User %s does not want to talk", user.first_name)
+    update.message.reply_text(
+        'Ok, no problem. Please send me your picture so I can know you, or send /skip if you don\'t want to'
+    )
+    return PHOTO
+
+
 conv_handler = ConversationHandler(
     entry_points=[CommandHandler('talk', talk)],
     states={
