@@ -71,6 +71,15 @@ def location(update: Update, context: CallbackContext):
     return BIO
 
 
+def skip_location(update: Update, context: CallbackContext):
+    user = update.message.from_user
+    logger.info("User %s did not send a location", user.first_name)
+    update.message.reply_text(
+        'Ok, no problem. Is there anything else you want to tell me?'
+    )
+    return LOCATION
+
+
 conv_handler = ConversationHandler(
     entry_points=[CommandHandler('talk', talk)],
     states={
