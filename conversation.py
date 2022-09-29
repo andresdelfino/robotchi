@@ -51,6 +51,15 @@ def photo(update: Update, context: CallbackContext):
     return LOCATION
 
 
+def skip_photo(update: Update, context: CallbackContext):
+    user = update.message.from_user
+    logger.info("User %s did not send a photo", user.first_name)
+    update.message.reply_text(
+        'ok, no problem. Please send me your location please or send /skip if you don\'t want to'
+    )
+    return LOCATION
+
+
 conv_handler = ConversationHandler(
     entry_points=[CommandHandler('talk', talk)],
     states={
