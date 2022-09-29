@@ -40,6 +40,17 @@ def skip_subject(update: Update, context: CallbackContext):
     return PHOTO
 
 
+def photo(update: Update, context: CallbackContext):
+    user = update.message.from_user
+    photo_file = update.message.photo[-1].get_file()
+    photo_file.download('user_photo.jpg')
+    logger.info("Photo of %s is called: %s", user.first_name, 'user_photo.jpg')
+    update.message.reply_text(
+        'Nice picture. Please send me your location, or send /skip if you don\'t want to'
+    )
+    return LOCATION
+
+
 conv_handler = ConversationHandler(
     entry_points=[CommandHandler('talk', talk)],
     states={
