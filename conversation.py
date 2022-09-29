@@ -88,6 +88,15 @@ def comment(update: Update, context: CallbackContext):
     return ConversationHandler.END
 
 
+def cancel(update: Update, context: CallbackContext):
+    user = update.message.from_user
+    logger.info("User %s cancelled the conversation", user.first_name)
+    update.message.reply_text(
+        'Ok, I hope you have a nice day', reply_markup=ReplyKeyboardRemove()
+    )
+    return ConversationHandler.END
+
+
 conv_handler = ConversationHandler(
     entry_points=[CommandHandler('talk', talk)],
     states={
