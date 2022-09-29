@@ -1,5 +1,11 @@
 from telegram import ReplyKeyboardRemove, Update
 from telegram.ext import CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext
+import logging
+
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
+SUBJECT, PHOTO, LOCATION, BIO = range(4)
 
 
 def talk(update: Update, context: CallbackContext):
