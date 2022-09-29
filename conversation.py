@@ -60,6 +60,17 @@ def skip_photo(update: Update, context: CallbackContext):
     return LOCATION
 
 
+def location(update: Update, context: CallbackContext):
+    user = update.message.from_user
+    user_location = update.message.location
+    logger.info("Location of user %s is latitude %f / longitude %f", user.first_name,
+                user_location.latitude, user_location.longitude)
+    update.message.reply_text(
+        'Hey, that is a nice place.'
+    )
+    return BIO
+
+
 conv_handler = ConversationHandler(
     entry_points=[CommandHandler('talk', talk)],
     states={
