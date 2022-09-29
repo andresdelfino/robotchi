@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 
 def start(update, context):  # Update is an object that represents an incoming update sent via a chat
-    print("We are inside start function")
     user = update.message.from_user
     context.bot.send_message(  # This is the send_message method from class meme_bot.py. This method is used to send
         # text messages. We are passing two arguments: chat_id, which is the unique identifier for the target chat or
@@ -31,7 +30,6 @@ def start(update, context):  # Update is an object that represents an incoming u
 
 
 def echo(update, context):
-    print("We are inside echo function")
     user = update.message.from_user
     context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -41,14 +39,13 @@ def echo(update, context):
 
 
 def get_meme(update, context):
-    print("We are inside get_meme function")
     user = update.message.from_user
     user_tag = ' '.join(context.args)
     if user_tag.lower() in tag_dict.keys():
-        print("User used a tag and it matches")
+        logger.info("User %s used a matching tag", user.first_name)
         chosen_meme = random.choice(tag_dict[user_tag.lower()]) + ".jpg"
     else:
-        print("User didn't used a tag or the tag didn't matched")
+        logger.info("User %s didn\'t use a tag or it didn\'t match", user.first_name)
         memes = [meme for meme in listdir(path.join(getcwd(), 'memes'))]  # issue #2, may need testing.
         chosen_meme = random.choice(memes)
     context.bot.send_photo(
@@ -60,7 +57,6 @@ def get_meme(update, context):
 
 def get_wiki(update, context):
     url = "https://es.wikipedia.org/wiki/"
-    print("We are inside get_wiki function")
     user = update.message.from_user
     element = ' '.join(context.args)
     route = f"wiki/{element}.html"  # "path" coflicts with the module of the same name
@@ -71,7 +67,7 @@ def get_wiki(update, context):
             text=message
         )
     except BadRequest:
-        print("There was an issue with the message")
+        logger.info("There was an issue with the message")
     logger.info("User %s called the get_wiki command", user.first_name)
 
 
@@ -99,10 +95,10 @@ def inline_query(update, context):  # parameter context is not used.
     # https://docs.python-telegram-bot.org/en/v13.14/telegram.ext.inlinequeryhandler.html
     # https://docs.python-telegram-bot.org/en/v13.14/telegram.inlinequery.html
     # https://docs.python-telegram-bot.org/en/v13.14/telegram.inlinequeryresultphoto.html
-    print('We are inside inline_query function')
+    user = update.message.from_user
     query = update.inline_query.query
-    print('User:', update.inline_query.from_user.username)
-    print('Query:', query)
+    logger.info("User %s is making an inline query", user.first_name)
+    logger.info("The query is: %s ", query)
 
     if query == '':
         return
