@@ -128,19 +128,19 @@ async def inline_query(update, context):  # parameter context is not used.
     await update.inline_query.answer(results, cache_time=0)
 
 
-start_handler = CommandHandler('start', start)  # CommandHandler is a class that defines what happens when a user
-# executes a command (/command). In this case, when user sends "start" command, the start function will be called
-echo_handler = MessageHandler(filters.TEXT & (~ filters.COMMAND), echo)  # MessageHandler is a class used when we
-# need to handle telegram messages. They might contain text, media or status updates
-meme_handler = CommandHandler('meme', get_meme)
-wiki_handler = CommandHandler('wiki', get_wiki)
-
-inline_handler = InlineQueryHandler(inline_query)
-
 if __name__ == "__main__":
     bot_token = environ.get('BOT_TOKEN', BOT_TOKEN)
 
     application = Application.builder().token(bot_token).build()
+
+    start_handler = CommandHandler('start', start)  # CommandHandler is a class that defines what happens when a user
+    # executes a command (/command). In this case, when user sends "start" command, the start function will be called
+    echo_handler = MessageHandler(filters.TEXT & (~ filters.COMMAND), echo)  # MessageHandler is a class used when we
+    # need to handle telegram messages. They might contain text, media or status updates
+    meme_handler = CommandHandler('meme', get_meme)
+    wiki_handler = CommandHandler('wiki', get_wiki)
+
+    inline_handler = InlineQueryHandler(inline_query)
 
     application.add_handler(start_handler, 0)  # Register a handler to the dispatcher. Order and priority counts.
     application.add_handler(echo_handler, 0)
