@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 SUBJECT, PHOTO, LOCATION, COMMENT = range(4)
 
 
-async def talk(update: Update, context: CallbackContext):
+async def talk(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     logger.info("User %s wants to talk", user.first_name)
     await update.message.reply_text(
@@ -25,7 +25,7 @@ async def talk(update: Update, context: CallbackContext):
     return SUBJECT
 
 
-async def subject(update: Update, context: CallbackContext):
+async def subject(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     chosen_subject = update.message.text
     logger.info("User %s chose to talk about %s", user.first_name, chosen_subject)
@@ -38,7 +38,7 @@ async def subject(update: Update, context: CallbackContext):
     return PHOTO
 
 
-async def skip_subject(update: Update, context: CallbackContext):
+async def skip_subject(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     logger.info("User %s does not want to talk", user.first_name)
     await update.message.reply_text(
@@ -47,7 +47,7 @@ async def skip_subject(update: Update, context: CallbackContext):
     return PHOTO
 
 
-async def photo(update: Update, context: CallbackContext):
+async def photo(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     photo_file = await update.message.photo[-1].get_file()
     await photo_file.download_to_drive('user_photo.jpg')
@@ -58,7 +58,7 @@ async def photo(update: Update, context: CallbackContext):
     return LOCATION
 
 
-async def skip_photo(update: Update, context: CallbackContext):
+async def skip_photo(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     logger.info("User %s did not send a photo", user.first_name)
     await update.message.reply_text(
@@ -67,7 +67,7 @@ async def skip_photo(update: Update, context: CallbackContext):
     return LOCATION
 
 
-async def location(update: Update, context: CallbackContext):
+async def location(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     user_location = update.message.location
     logger.info("Location of user %s is latitude %f / longitude %f", user.first_name,
@@ -78,7 +78,7 @@ async def location(update: Update, context: CallbackContext):
     return COMMENT
 
 
-async def skip_location(update: Update, context: CallbackContext):
+async def skip_location(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     logger.info("User %s did not send a location", user.first_name)
     await update.message.reply_text(
@@ -87,7 +87,7 @@ async def skip_location(update: Update, context: CallbackContext):
     return COMMENT
 
 
-async def comment(update: Update, context: CallbackContext):
+async def comment(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     logger.info("Comment by %s: %s", user.first_name, update.message.text)
     await update.message.reply_text(
@@ -96,7 +96,7 @@ async def comment(update: Update, context: CallbackContext):
     return ConversationHandler.END
 
 
-async def cancel(update: Update, context: CallbackContext):
+async def cancel(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     logger.info("User %s cancelled the conversation", user.first_name)
     await update.message.reply_text(
