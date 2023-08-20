@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "robotchi"
+version = "0.1.0"
+description = ""
+authors = ["Brian Goldman <leonel89011@gmail.com>", "Andrés Delfino <adelfino@gmail.com>"]
+packages = [{include = "robotchi"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+bs4 = "*"
+python-telegram-bot = "*"
+
+[tool.poetry.scripts]
+robotchi = "robotchi:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

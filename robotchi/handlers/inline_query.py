@@ -1,4 +1,11 @@
+import logging
 import uuid
+
+from telegram import InlineQueryResultPhoto
+
+
+logger = logging.getLogger(__name__)
+
 
 memes = [
     {
@@ -55,3 +62,37 @@ memes = [
         }
     },
 ]
+
+
+async def handle_inline_query(update, context):
+    query = update.inline_query.query
+    if update.message and update.message.from_user:
+        logger.info("User %s is making an inline query", update.message.from_user.first_name)
+    else:
+        logger.info("Someone is making an inline query")
+    logger.info("The query is: %s ", query)
+
+    if query == '':
+        return
+
+    results = []
+
+    tags = set(query.lower().split())
+
+    print('Memes matched:')
+
+    for meme in memes:
+        if query == 'all' or tags <= meme['tags']:
+            print('*', meme['name'])
+            results.append(
+                InlineQueryResultPhoto(
+                    id=meme['id'],
+                    photo_url=meme['photo_url'],
+                    thumbnail_url=meme['thumb_url'],
+                ),
+            )
+
+    if not results:
+        print('None')
+
+    await update.inline_query.answer(results, cache_time=0)
