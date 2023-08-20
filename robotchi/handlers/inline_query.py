@@ -1,7 +1,11 @@
 import logging
 import uuid
 
-from telegram import InlineQueryResultPhoto
+from telegram import (
+    InlineQueryResultPhoto,
+    Update,
+)
+from telegram.ext import CallbackContext
 
 
 logger = logging.getLogger(__name__)
@@ -64,7 +68,7 @@ memes = [
 ]
 
 
-async def handle_inline_query(update, context):
+async def handle_inline_query(update: Update, context: CallbackContext) -> None:
     query = update.inline_query.query
     if update.message and update.message.from_user:
         logger.info("User %s is making an inline query", update.message.from_user.first_name)

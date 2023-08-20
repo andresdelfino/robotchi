@@ -2,24 +2,28 @@ import logging
 import os
 import random
 
+from telegram import Update
+from telegram.ext import CallbackContext
+
 
 logger = logging.getLogger(__name__)
 
 
-tag_dict = dict()
-tag_dict["surprise"] = ["andy_dwyer_surprise"]
-tag_dict["angry"] = ["angry_bob"]
-tag_dict["handshake"] = ["epic_handshake"]
-tag_dict["old"] = ["old_lady"]
-tag_dict["simply"] = ["one_does_not_simply"]
-tag_dict["doubt"] = ["philosoraptor"]
-tag_dict["suspicious"] = ["suspicious_fry"]
-tag_dict["sarcasm"] = ["that_would_be_great"]
-tag_dict["calculus"] = ["trigonometry"]
-tag_dict["unsettled"] = ["unsettled_tom"]
+tag_dict = {
+    "angry": ["angry_bob"],
+    "calculus": ["trigonometry"],
+    "doubt": ["philosoraptor"],
+    "handshake": ["epic_handshake"],
+    "old": ["old_lady"],
+    "sarcasm": ["that_would_be_great"],
+    "simply": ["one_does_not_simply"],
+    "surprise": ["andy_dwyer_surprise"],
+    "suspicious": ["suspicious_fry"],
+    "unsettled": ["unsettled_tom"],
+}
 
 
-async def handle_meme_command(update, context):
+async def handle_meme_command(update: Update, context: CallbackContext) -> None:
     MEMES_DIR = os.path.join(os.getcwd(), 'meme')
 
     user = update.message.from_user
@@ -29,7 +33,7 @@ async def handle_meme_command(update, context):
         logger.info("User %s used a matching tag", user.first_name)
         chosen_meme = random.choice(tag_dict[user_tag.lower()]) + ".jpg"
     else:
-        logger.info("User %s didn\'t use a tag or it didn\'t match", user.first_name)
+        logger.info("User %s didn't use a tag or it didn't match", user.first_name)
         memes = [meme for meme in os.listdir(MEMES_DIR)]
         chosen_meme = random.choice(memes)
 

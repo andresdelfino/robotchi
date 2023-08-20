@@ -6,14 +6,12 @@ from telegram import (
 )
 from telegram.ext import (
     CallbackContext,
-    CommandHandler,
     ConversationHandler,
-    MessageHandler,
-    filters,
 )
 
 
 logger = logging.getLogger(__name__)
+
 SUBJECT, PHOTO, LOCATION, COMMENT = range(4)
 
 
@@ -32,8 +30,8 @@ async def subject(update: Update, context: CallbackContext):
     chosen_subject = update.message.text
     logger.info("User %s chose to talk about %s", user.first_name, chosen_subject)
     # url = "https://es.wikipedia.org/wiki/"
-    # route = f"wiki/{chosen_subject}.html"  # "path" coflicts with the module of the same name
-    # message = download_wiki(chosen_subject, route, url)
+    # path = f"wiki/{chosen_subject}.html"
+    # message = download_wiki(chosen_subject, path, url)
     await update.message.reply_text(
         'Here is some info about ' + chosen_subject + ':' + '\n\n'
     )
@@ -44,18 +42,18 @@ async def skip_subject(update: Update, context: CallbackContext):
     user = update.message.from_user
     logger.info("User %s does not want to talk", user.first_name)
     await update.message.reply_text(
-        'Ok, no problem. Please send me your picture so I can know you, or send /skip if you don\'t want to'
+        "Ok, no problem. Please send me your picture so I can know you, or send /skip if you don't want to",
     )
     return PHOTO
 
 
 async def photo(update: Update, context: CallbackContext):
     user = update.message.from_user
-    photo_file = update.message.photo[-1].get_file()
-    photo_file.download('user_photo.jpg')
+    photo_file = await update.message.photo[-1].get_file()
+    await photo_file.download_to_drive('user_photo.jpg')
     logger.info("Photo of %s is called: %s", user.first_name, 'user_photo.jpg')
     await update.message.reply_text(
-        'Nice picture. Please send me your location, or send /skip if you don\'t want to'
+        "Nice picture. Please send me your location, or send /skip if you don't want to"
     )
     return LOCATION
 
@@ -64,7 +62,7 @@ async def skip_photo(update: Update, context: CallbackContext):
     user = update.message.from_user
     logger.info("User %s did not send a photo", user.first_name)
     await update.message.reply_text(
-        'ok, no problem. Please send me your location please or send /skip if you don\'t want to'
+        "ok, no problem. Please send me your location please or send /skip if you don't want to"
     )
     return LOCATION
 
@@ -98,33 +96,10 @@ async def comment(update: Update, context: CallbackContext):
     return ConversationHandler.END
 
 
-def cancel(update: Update, context: CallbackContext):
+async def cancel(update: Update, context: CallbackContext):
     user = update.message.from_user
     logger.info("User %s cancelled the conversation", user.first_name)
     await update.message.reply_text(
         'Ok, I hope you have a nice day', reply_markup=ReplyKeyboardRemove()
     )
     return ConversationHandler.END
-
-
-conv_handler = ConversationHandler(
-    entry_points=[CommandHandler('talk', talk)],
-    states={
-        SUBJECT: [
-            MessageHandler(filters.TEXT, subject),
-            CommandHandler('skip', skip_subject)
-        ],
-        PHOTO: [
-            MessageHandler(filters.PHOTO, photo),
-            CommandHandler('skip', skip_photo)
-        ],
-        LOCATION: [
-            MessageHandler(filters.LOCATION, location),
-            CommandHandler('skip', skip_location),
-        ],
-        COMMENT: [
-            MessageHandler(filters.TEXT & ~filters.COMMAND, comment)
-        ],
-    },
-    fallbacks=[CommandHandler('cancel', cancel)]
-)

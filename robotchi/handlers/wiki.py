@@ -3,7 +3,9 @@ import re
 import urllib.request
 
 from bs4 import BeautifulSoup
+from telegram import Update
 from telegram.error import BadRequest
+from telegram.ext import CallbackContext
 
 
 logger = logging.getLogger(__name__)
@@ -24,7 +26,7 @@ def download_wiki(element, url):
     return message
 
 
-async def handle_wiki_command(update, context):
+async def handle_wiki_command(update: Update, context: CallbackContext) -> None:
     url = "https://es.wikipedia.org/wiki/"
     user = update.message.from_user
     element = ' '.join(context.args)
