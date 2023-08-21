@@ -1,5 +1,5 @@
+import importlib.resources
 import logging
-import os
 import random
 
 from telegram import Update
@@ -24,7 +24,7 @@ tag_dict = {
 
 
 async def handle_meme_command(update: Update, context: CallbackContext) -> None:
-    MEMES_DIR = os.path.join(os.getcwd(), 'meme')
+    MEMES_DIR = 'meme'
 
     user = update.message.from_user
     user_tag = ' '.join(context.args)
@@ -34,12 +34,13 @@ async def handle_meme_command(update: Update, context: CallbackContext) -> None:
         chosen_meme = random.choice(tag_dict[user_tag.lower()]) + ".jpg"
     else:
         logger.info("User %s didn't use a tag or it didn't match", user.first_name)
-        memes = [meme for meme in os.listdir(MEMES_DIR)]
+        memes = list(resource.name for resource in importlib.resources.files('robotchi').joinpath(MEMES_DIR).iterdir())
         chosen_meme = random.choice(memes)
 
-    await context.bot.send_photo(
-        chat_id=update.effective_chat.id,
-        photo=open(os.path.join(MEMES_DIR, chosen_meme), 'rb'),
-    )
+    with importlib.resources.files('robotchi').joinpath(MEMES_DIR, chosen_meme).open('rb') as f:
+        await context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=f,
+        )
 
     logger.info("User %s called the get_meme command", user.first_name)
