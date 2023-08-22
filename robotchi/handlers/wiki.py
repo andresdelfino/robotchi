@@ -20,7 +20,7 @@ def download_wiki(element, url):
             .find("div", id="mw-content-text") \
             .find("div", {"class": "mw-parser-output"}) \
             .find("p").get_text()
-        message = re.sub('\[\d\]', '', message)  # Pycharm me está tirando erroes en este RE
+        message = re.sub(r'\[\d\]', '', message)
     except urllib.error.HTTPError:
         message = f"Wikipedia has no information about {element}"
     return message
