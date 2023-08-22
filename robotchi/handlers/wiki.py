@@ -32,10 +32,7 @@ async def handle_wiki_command(update: Update, context: CallbackContext) -> None:
     element = ' '.join(context.args)
     message = download_wiki(element, url)
     try:
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=message
-        )
+        await update.message.reply_text(message)
     except BadRequest:
         logger.info("There was an issue with the message")
     logger.info("User %s called the get_wiki command", user.first_name)
